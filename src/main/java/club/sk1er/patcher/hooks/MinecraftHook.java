@@ -31,7 +31,14 @@ public class MinecraftHook {
         for (KeyBinding keybinding : KeyBindingAccessor.getKeybindArray()) {
             try {
                 final int keyCode = keybinding.getKeyCode();
-                KeyBinding.setKeyBindState(keyCode, keyCode < 256 && Keyboard.isKeyDown(keyCode));
+                boolean isPressed = false;
+                if (keyCode < 0) {
+                    int buttonCode = keyCode + 100;
+                    isPressed = Mouse.isButtonDown(buttonCode);
+                } else if (keyCode >= 0) {
+                    isPressed = Keyboard.isKeyDown(keyCode);
+                }
+                KeyBinding.setKeyBindState(keyCode,  keyCode < 256 && isPressed);
             } catch (IndexOutOfBoundsException ignored) {
             }
         }
